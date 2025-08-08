@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define WIDTH 400
 #define HEIGHT 400
@@ -19,6 +20,27 @@ const Color FONT_COLOR = {
     .a = 255
 };
 
+const Color BUTTON_COLOR = {
+    .r = 128,
+    .g = 255,
+    .b = 0,
+    .a = 255,
+};
+
+const Color BUTTON_HOVER_COLOR = {
+    .r = 128,
+    .g = 255,
+    .b = 128,
+    .a = 255,
+};
+
+const Color BUTTON_PRESS_COLOR = {
+    .r = 0,
+    .g = 255,
+    .b = 128,
+    .a = 255,
+};
+
 struct time {
     int minutes;
     int seconds;
@@ -27,6 +49,42 @@ struct time {
 void draw_centered_text(const char* text, int ypos, int font_size) {
     int text_width = MeasureText(text, font_size);
     DrawText(text, (WIDTH - text_width) / 2, ypos, font_size, FONT_COLOR);
+}
+
+struct button {
+    Vector2 pos;
+    Vector2 size;
+    bool is_triangle;
+    bool is_upside_down;
+};
+
+bool is_hovered(Vector2 pos, Vector2 size) {
+    Vector2 mouse_pos = GetMousePosition();
+
+    return 
+        (mouse_pos.x >= pos.x && mouse_pos.x <= pos.x + size.x) && 
+        (mouse_pos.y >= pos.y && mouse_pos.y <= pos.y + size.y); 
+}
+
+void draw_button(const button* button) {
+    Color color = BUTTON_COLOR;
+
+    if (is_hovered(button->pos, button->size)) {
+        color = BUTTON_HOVER_COLOR;
+
+        if (IsButtonDown(MOUSE_BUTTON_LEFT)) {
+            color = BUTTON_PRESSED_COLOR;
+        }
+    }
+
+    if (button->is_triangle) {
+        // TODO:
+        // Draw the triangle
+
+        return;
+    }
+
+    DrawRectangle(button->pos, button->size, color);
 }
 
 int main(void) {
