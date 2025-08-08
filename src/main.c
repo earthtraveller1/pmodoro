@@ -78,13 +78,22 @@ void draw_button(const struct button* button) {
     }
 
     if (button->is_triangle) {
-        // TODO:
-        // Draw the triangle
+        Vector2 a, b, c;
 
-        return;
+        if (button->is_upside_down) {
+            a = (Vector2) { button->pos.x, button->pos.y };
+            b = (Vector2) { button->pos.x + button->size.x, button->pos.y };
+            c = (Vector2) { button->pos.x + button->size.x / 2, button->pos.y + button->size.y };
+        } else {
+            a = (Vector2) { button->pos.x, button->pos.y + button->size.y };
+            b = (Vector2) { button->pos.x + button->size.x, button->pos.y + button->size.y };
+            c = (Vector2) { button->pos.x + button->size.x / 2, button->pos.y};
+        }
+
+        DrawTriangle(a, b, c, color);
+    } else {
+        DrawRectangleV(button->pos, button->size, color);
     }
-
-    DrawRectangleV(button->pos, button->size, color);
 }
 
 int main(void) {
