@@ -66,14 +66,14 @@ bool is_hovered(Vector2 pos, Vector2 size) {
         (mouse_pos.y >= pos.y && mouse_pos.y <= pos.y + size.y); 
 }
 
-void draw_button(const button* button) {
+void draw_button(const struct button* button) {
     Color color = BUTTON_COLOR;
 
     if (is_hovered(button->pos, button->size)) {
         color = BUTTON_HOVER_COLOR;
 
-        if (IsButtonDown(MOUSE_BUTTON_LEFT)) {
-            color = BUTTON_PRESSED_COLOR;
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            color = BUTTON_PRESS_COLOR;
         }
     }
 
@@ -84,7 +84,7 @@ void draw_button(const button* button) {
         return;
     }
 
-    DrawRectangle(button->pos, button->size, color);
+    DrawRectangleV(button->pos, button->size, color);
 }
 
 int main(void) {
@@ -93,6 +93,13 @@ int main(void) {
 
     struct time work = {25, 0};
     struct time rest = {5, 0};
+
+    struct button start_button = {
+        .pos = { (WIDTH - 150) / 2, 325 },
+        .size = { 150, 50 },
+        .is_triangle = false,
+        .is_upside_down = false,
+    };
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -111,6 +118,8 @@ int main(void) {
 
         snprintf(text_buf, 512, "%02d:%02d", rest.minutes, rest.seconds);
         draw_centered_text(text_buf, TIME_TOP_PADDING * 2 + TIME_FONT_SIZE, TIME_FONT_SIZE);
+
+        draw_button(&start_button);
 
         EndDrawing();
     }
