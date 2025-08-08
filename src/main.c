@@ -21,23 +21,23 @@ const Color FONT_COLOR = {
 };
 
 const Color BUTTON_COLOR = {
-    .r = 128,
-    .g = 255,
+    .r = 64,
+    .g = 128,
     .b = 0,
     .a = 255,
 };
 
 const Color BUTTON_HOVER_COLOR = {
-    .r = 128,
-    .g = 255,
-    .b = 128,
+    .r = 64,
+    .g = 128,
+    .b = 64,
     .a = 255,
 };
 
 const Color BUTTON_PRESS_COLOR = {
     .r = 0,
-    .g = 255,
-    .b = 128,
+    .g = 128,
+    .b = 64,
     .a = 255,
 };
 
@@ -56,6 +56,7 @@ struct button {
     Vector2 size;
     bool is_triangle;
     bool is_upside_down;
+    const char* label;
 };
 
 bool is_hovered(Vector2 pos, Vector2 size) {
@@ -94,6 +95,13 @@ void draw_button(const struct button* button) {
     } else {
         DrawRectangleV(button->pos, button->size, color);
     }
+
+    if (button->label) {
+        int text_width = MeasureText(button->label, LABEL_FONT_SIZE);
+        int label_x = button->pos.x + (button->size.x - text_width) / 2;
+        int label_y = button->pos.y + (button->size.y - LABEL_FONT_SIZE) / 2;
+        DrawText(button->label, label_x, label_y, LABEL_FONT_SIZE, FONT_COLOR);
+    }
 }
 
 int main(void) {
@@ -108,6 +116,7 @@ int main(void) {
         .size = { 150, 50 },
         .is_triangle = false,
         .is_upside_down = false,
+        .label = "Start"
     };
 
     while (!WindowShouldClose()) {
