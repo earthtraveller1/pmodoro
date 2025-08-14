@@ -173,6 +173,8 @@ int main(void) {
     SetConfigFlags(FLAG_WINDOW_HIGHDPI);
     InitWindow(WIDTH, HEIGHT, "PMOdoro");
 
+    SetTargetFPS(60);
+
     struct time work = {25, 0};
     struct time rest = {5, 0};
 
