@@ -54,9 +54,11 @@ int main(void) {
     };
 
     struct time_buttons work_time_buttons = new_time_buttons(VEC(0.0, TIME_TOP_PADDING));
+    struct time_buttons rest_time_buttons = new_time_buttons(VEC(0.0, TIME_TOP_PADDING * 2 + TIME_FONT_SIZE));
 
     while (!WindowShouldClose()) {
         update_time(&work_time_buttons, &work);
+        update_time(&rest_time_buttons, &rest);
 
         BeginDrawing();
         ClearBackground(GetColor(0x0f0f0fff));
@@ -72,6 +74,7 @@ int main(void) {
         draw_button(&load_button);
 
         draw_time_buttons(&work_time_buttons);
+        draw_time_buttons(&rest_time_buttons);
 
         EndDrawing();
     }
