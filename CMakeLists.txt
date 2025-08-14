@@ -19,7 +19,13 @@ FetchContent_MakeAvailable(raylib)
 add_executable(
     pmodoro
 
+    src/buttons.c
+    src/buttons.h
+    src/constants.h
     src/main.c
+    src/time.c
+    src/time.h
+    src/vector-math.h
 )
 
 target_link_libraries(pmodoro PRIVATE raylib)
