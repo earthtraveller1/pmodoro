@@ -4,10 +4,12 @@
 #include <raylib.h>
 
 #include "time.h"
+#include "constants.h"
 
 struct button {
     Vector2 pos;
     Vector2 size;
+    Color color;
     bool is_triangle;
     bool is_upside_down;
     const char* label;

@@ -9,6 +9,7 @@ struct button new_triangle_button(Vector2 pos, bool upside_down) {
     return (struct button) {
         .pos = pos,
         .size = (Vector2) { 20.0, 10.0 },
+        .color = BUTTON_COLOR,
         .is_triangle = true,
         .is_upside_down = upside_down,
         .label = NULL,
@@ -28,7 +29,7 @@ bool button_pressed(const struct button* button) {
 }
 
 void draw_button(const struct button* button) {
-    Color color = BUTTON_COLOR;
+    Color color = button->color;
 
     if (is_hovered(button->pos, button->size)) {
         color = BUTTON_HOVER_COLOR;

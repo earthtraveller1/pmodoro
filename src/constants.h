@@ -26,6 +26,13 @@
     .a = 255,\
 })
 
+#define BUTTON_COLOR_2 ((Color){\
+    .r = 64,\
+    .g = 64,\
+    .b = 128,\
+    .a = 255,\
+})
+
 #define BUTTON_HOVER_COLOR ((Color){\
     .r = 64,\
     .g = 128,\
