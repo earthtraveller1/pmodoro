@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "vector-math.h"
+
 #define WIDTH 400
 #define HEIGHT 400
 
@@ -59,6 +61,16 @@ struct button {
     const char* label;
 };
 
+struct button new_triangle_button(Vector2 pos, bool upside_down) {
+    return (struct button) {
+        .pos = pos,
+        .size = (Vector2) { 20.0, 10.0 },
+        .is_triangle = true,
+        .is_upside_down = upside_down,
+        .label = NULL,
+    };
+}
+
 bool is_hovered(Vector2 pos, Vector2 size) {
     Vector2 mouse_pos = GetMousePosition();
 
@@ -82,9 +94,9 @@ void draw_button(const struct button* button) {
         Vector2 a, b, c;
 
         if (button->is_upside_down) {
-            a = (Vector2) { button->pos.x, button->pos.y };
+            c = (Vector2) { button->pos.x, button->pos.y };
             b = (Vector2) { button->pos.x + button->size.x, button->pos.y };
-            c = (Vector2) { button->pos.x + button->size.x / 2, button->pos.y + button->size.y };
+            a = (Vector2) { button->pos.x + button->size.x / 2, button->pos.y + button->size.y };
         } else {
             a = (Vector2) { button->pos.x, button->pos.y + button->size.y };
             b = (Vector2) { button->pos.x + button->size.x, button->pos.y + button->size.y };
@@ -104,6 +116,55 @@ void draw_button(const struct button* button) {
     }
 }
 
+struct time_buttons {
+    struct button minute_tens_inc;
+    struct button minute_tens_dec;
+    struct button minute_ones_inc;
+    struct button minute_ones_dec;
+
+    struct button second_tens_inc;
+    struct button second_tens_dec;
+    struct button second_ones_inc;
+    struct button second_ones_dec;
+};
+
+struct time_buttons new_time_buttons(Vector2 pos) {
+    struct time_buttons buttons;
+    memset(&buttons, 0, sizeof(buttons));
+
+    const float minute_margin = 90.0;
+    const float second_margin = minute_margin + 140.0;
+    const float digit_gap = 60.0;
+    const float v_padding = 10.0;
+    const float v_font_size = 80.0;
+
+    buttons.minute_tens_inc = new_triangle_button(VEC_ADD(pos, VEC(minute_margin, -v_padding)), false);
+    buttons.minute_tens_dec = new_triangle_button(VEC_ADD(pos, VEC(minute_margin, v_font_size + v_padding)), true);
+
+    buttons.minute_ones_inc = new_triangle_button(VEC_ADD(pos, VEC(minute_margin + digit_gap, -v_padding)), false);
+    buttons.minute_ones_dec = new_triangle_button(VEC_ADD(pos, VEC(minute_margin + digit_gap, v_font_size + v_padding)), true);
+
+    buttons.second_tens_inc = new_triangle_button(VEC_ADD(pos, VEC(second_margin, -v_padding)), false);
+    buttons.second_tens_dec = new_triangle_button(VEC_ADD(pos, VEC(second_margin, v_font_size + v_padding)), true);
+
+    buttons.second_ones_inc = new_triangle_button(VEC_ADD(pos, VEC(second_margin + digit_gap, -v_padding)), false);
+    buttons.second_ones_dec = new_triangle_button(VEC_ADD(pos, VEC(second_margin + digit_gap, v_font_size + v_padding)), true);
+
+    return buttons;
+}
+
+void draw_time_buttons(const struct time_buttons* time_buttons) {
+    draw_button(&time_buttons->minute_tens_inc);
+    draw_button(&time_buttons->minute_tens_dec);
+    draw_button(&time_buttons->minute_ones_inc);
+    draw_button(&time_buttons->minute_ones_dec);
+
+    draw_button(&time_buttons->second_tens_inc);
+    draw_button(&time_buttons->second_tens_dec);
+    draw_button(&time_buttons->second_ones_inc);
+    draw_button(&time_buttons->second_ones_dec);
+}
+
 int main(void) {
     SetConfigFlags(FLAG_WINDOW_HIGHDPI);
     InitWindow(WIDTH, HEIGHT, "PMOdoro");
@@ -118,6 +179,8 @@ int main(void) {
         .is_upside_down = false,
         .label = "Start"
     };
+
+    struct time_buttons work_time_buttons = new_time_buttons(VEC(0.0, TIME_TOP_PADDING));
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -138,6 +201,8 @@ int main(void) {
         draw_centered_text(text_buf, TIME_TOP_PADDING * 2 + TIME_FONT_SIZE, TIME_FONT_SIZE);
 
         draw_button(&start_button);
+
+        draw_time_buttons(&work_time_buttons);
 
         EndDrawing();
     }
