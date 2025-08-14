@@ -61,15 +61,11 @@ int main(void) {
         BeginDrawing();
         ClearBackground(GetColor(0x0f0f0fff));
 
-        char text_buf[512];
-
         draw_centered_text("Work", TIME_TOP_PADDING - LABEL_BOTTOM_PADDING, LABEL_FONT_SIZE);
-        snprintf(text_buf, 512, "%02d:%02d", work.minutes, work.seconds);
-        draw_centered_text(text_buf, TIME_TOP_PADDING, TIME_FONT_SIZE);
+        draw_time(&work, TIME_TOP_PADDING);
 
         draw_centered_text("Rest", TIME_TOP_PADDING * 2 + TIME_FONT_SIZE - LABEL_BOTTOM_PADDING, LABEL_FONT_SIZE);
-        snprintf(text_buf, 512, "%02d:%02d", rest.minutes, rest.seconds);
-        draw_centered_text(text_buf, TIME_TOP_PADDING * 2 + TIME_FONT_SIZE, TIME_FONT_SIZE);
+        draw_time(&rest, TIME_TOP_PADDING * 2 + TIME_FONT_SIZE);
 
         draw_button(&save_button);
         draw_button(&start_button);

@@ -69,23 +69,25 @@ struct time_buttons new_time_buttons(Vector2 pos) {
     struct time_buttons buttons;
     memset(&buttons, 0, sizeof(buttons));
 
-    const float minute_margin = 90.0;
-    const float second_margin = minute_margin + 140.0;
     const float digit_gap = 60.0;
+    const float total_width = digit_gap * 5;
+    const float minute_margin = (WIDTH - total_width) / 2.0;
+    const float second_margin = minute_margin + digit_gap * 3;
     const float v_padding = 10.0;
+    const float h_padding = 15.0;
     const float v_font_size = 80.0;
 
-    buttons.minute_tens_inc = new_triangle_button(VEC_ADD(pos, VEC(minute_margin, -v_padding)), false);
-    buttons.minute_tens_dec = new_triangle_button(VEC_ADD(pos, VEC(minute_margin, v_font_size + v_padding)), true);
+    buttons.minute_tens_inc = new_triangle_button(VEC_ADD(pos, VEC(minute_margin + h_padding, -v_padding)), false);
+    buttons.minute_tens_dec = new_triangle_button(VEC_ADD(pos, VEC(minute_margin + h_padding, v_font_size + v_padding)), true);
 
-    buttons.minute_ones_inc = new_triangle_button(VEC_ADD(pos, VEC(minute_margin + digit_gap, -v_padding)), false);
-    buttons.minute_ones_dec = new_triangle_button(VEC_ADD(pos, VEC(minute_margin + digit_gap, v_font_size + v_padding)), true);
+    buttons.minute_ones_inc = new_triangle_button(VEC_ADD(pos, VEC(minute_margin + h_padding + digit_gap, -v_padding)), false);
+    buttons.minute_ones_dec = new_triangle_button(VEC_ADD(pos, VEC(minute_margin + h_padding + digit_gap, v_font_size + v_padding)), true);
 
-    buttons.second_tens_inc = new_triangle_button(VEC_ADD(pos, VEC(second_margin, -v_padding)), false);
-    buttons.second_tens_dec = new_triangle_button(VEC_ADD(pos, VEC(second_margin, v_font_size + v_padding)), true);
+    buttons.second_tens_inc = new_triangle_button(VEC_ADD(pos, VEC(second_margin + h_padding, -v_padding)), false);
+    buttons.second_tens_dec = new_triangle_button(VEC_ADD(pos, VEC(second_margin + h_padding, v_font_size + v_padding)), true);
 
-    buttons.second_ones_inc = new_triangle_button(VEC_ADD(pos, VEC(second_margin + digit_gap, -v_padding)), false);
-    buttons.second_ones_dec = new_triangle_button(VEC_ADD(pos, VEC(second_margin + digit_gap, v_font_size + v_padding)), true);
+    buttons.second_ones_inc = new_triangle_button(VEC_ADD(pos, VEC(second_margin + h_padding + digit_gap, -v_padding)), false);
+    buttons.second_ones_dec = new_triangle_button(VEC_ADD(pos, VEC(second_margin + h_padding + digit_gap, v_font_size + v_padding)), true);
 
     return buttons;
 }
