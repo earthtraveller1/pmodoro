@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include "vector-math.h"
 
@@ -47,6 +48,44 @@ struct time {
     int minutes;
     int seconds;
 };
+
+void time_inc_mins(struct time* time, unsigned int mins) {
+    int new_mins = time->minutes + mins;
+    if (new_mins < 100) {
+        time->minutes = new_mins;
+    }
+}
+
+void time_dec_mins(struct time* time, unsigned int mins) {
+    int new_mins = time->minutes - mins;
+    if (new_mins >= 0) {
+        time->minutes = new_mins;
+    }
+}
+
+void time_inc_secs(struct time* time, unsigned int secs) {
+    int new_secs = time->seconds + secs;
+    if (new_secs >= 60) {
+        time->seconds = new_secs % 60;
+        time_inc_mins(time, new_secs / 60);
+
+        return;
+    }
+
+    time->seconds = new_secs;
+}
+
+void time_dec_secs(struct time* time, unsigned int secs) {
+    int new_secs = time->seconds - secs;
+    if (new_secs < 0) {
+        time->seconds = abs(new_secs % 60);
+        time_dec_mins(time, abs(new_secs / 60));
+
+        return;
+    }
+
+    time->seconds = new_secs;
+}
 
 void draw_centered_text(const char* text, int ypos, int font_size) {
     int text_width = MeasureText(text, font_size);
@@ -169,6 +208,18 @@ void draw_time_buttons(const struct time_buttons* time_buttons) {
     draw_button(&time_buttons->second_ones_dec);
 }
 
+void update_time(const struct time_buttons* time_buttons, struct time* time) {
+    if (button_pressed(&time_buttons->minute_tens_inc)) time_inc_mins(time, 10);
+    if (button_pressed(&time_buttons->minute_tens_dec)) time_dec_mins(time, 10);
+    if (button_pressed(&time_buttons->minute_ones_inc)) time_inc_mins(time, 1);
+    if (button_pressed(&time_buttons->minute_ones_dec)) time_dec_mins(time, 1);
+
+    if (button_pressed(&time_buttons->second_tens_inc)) time_inc_secs(time, 10);
+    if (button_pressed(&time_buttons->second_tens_dec)) time_dec_secs(time, 10);
+    if (button_pressed(&time_buttons->second_ones_inc)) time_inc_secs(time, 1);
+    if (button_pressed(&time_buttons->second_ones_dec)) time_dec_secs(time, 1);
+}
+
 int main(void) {
     SetConfigFlags(FLAG_WINDOW_HIGHDPI);
     InitWindow(WIDTH, HEIGHT, "PMOdoro");
@@ -189,6 +240,8 @@ int main(void) {
     struct time_buttons work_time_buttons = new_time_buttons(VEC(0.0, TIME_TOP_PADDING));
 
     while (!WindowShouldClose()) {
+        update_time(&work_time_buttons, &work);
+
         BeginDrawing();
 
         ClearBackground(GetColor(0x0f0f0fff));
