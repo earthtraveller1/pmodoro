@@ -79,6 +79,10 @@ bool is_hovered(Vector2 pos, Vector2 size) {
         (mouse_pos.y >= pos.y && mouse_pos.y <= pos.y + size.y); 
 }
 
+bool button_pressed(const struct button* button) {
+    return IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && is_hovered(button->pos, button->size);
+}
+
 void draw_button(const struct button* button) {
     Color color = BUTTON_COLOR;
 
@@ -173,7 +177,7 @@ int main(void) {
     struct time rest = {5, 0};
 
     struct button start_button = {
-        .pos = { (WIDTH - 150) / 2, 325 },
+        .pos = { (WIDTH - 150) / 2.0, 325 },
         .size = { 150, 50 },
         .is_triangle = false,
         .is_upside_down = false,
@@ -188,7 +192,6 @@ int main(void) {
         ClearBackground(GetColor(0x0f0f0fff));
 
         char text_buf[512];
-        int text_width;
 
         draw_centered_text("Work", TIME_TOP_PADDING - LABEL_BOTTOM_PADDING, LABEL_FONT_SIZE);
 
