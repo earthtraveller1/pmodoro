@@ -1,18 +1,15 @@
 #include <raylib.h>
 
-#include <stdio.h>
 #include <stdbool.h>
 
 #include "vector-math.h"
 #include "buttons.h"
 #include "constants.h"
 
-Font space_mono;
-
 void draw_centered_text(const char* text, int ypos, int font_size) {
     int text_width = MeasureText(text, font_size);
     Vector2 position = VEC((WIDTH - text_width) / 2.0, ypos);
-    DrawTextEx(space_mono, text, position, font_size, 10, FONT_COLOR);
+    DrawTextEx(GetFontDefault(), text, position, font_size, 10, FONT_COLOR);
 }
 
 int main(void) {
@@ -20,8 +17,6 @@ int main(void) {
     InitWindow(WIDTH, HEIGHT, "PMOdoro");
 
     SetTargetFPS(60);
-
-    space_mono = LoadFont("fonts/SpaceMono.ttf");
 
     struct time work = {25, 0};
     struct time rest = {5, 0};
