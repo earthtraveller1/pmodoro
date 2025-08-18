@@ -4,6 +4,7 @@ project(pmodoro LANGUAGES C)
 
 if (NOT MSVC)
     add_compile_options(-Wall -Wextra -Wpedantic)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 endif()
 
 include(FetchContent)
