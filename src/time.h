@@ -18,4 +18,9 @@ void time_dec_secs(struct time* time, unsigned int secs);
 
 void draw_time(const struct time* time, float ypos);
 
+double time_to_secs(struct time time);
+
+struct time secs_to_time(int secs);
+
+
 #endif

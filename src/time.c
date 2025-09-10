@@ -43,6 +43,17 @@ void time_dec_secs(struct time* time, unsigned int secs) {
     time->seconds = new_secs;
 }
 
+double time_to_secs(struct time time) {
+    return time.seconds + 60 * time.minutes;
+}
+
+struct time secs_to_time(int secs) {
+    return (struct time) {
+        .minutes = secs / 60,
+        .seconds = secs % 60
+    };
+}
+
 void draw_time(const struct time* time, float ypos) {
     const float digit_gap = 60.0;
     const float total_width = digit_gap * 5;
