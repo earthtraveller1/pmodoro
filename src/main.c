@@ -67,7 +67,7 @@ struct main_page new_main_page(void) {
     };
 }
 
-void update_main_page(struct main_page* main_page, struct time* work, struct time* rest) {
+enum page_enum update_main_page(struct main_page* main_page, struct time* work, struct time* rest) {
     update_time(&main_page->work_time_buttons, work);
     update_time(&main_page->rest_time_buttons, rest);
 
@@ -88,6 +88,12 @@ void update_main_page(struct main_page* main_page, struct time* work, struct tim
     draw_time_buttons(&main_page->rest_time_buttons);
 
     EndDrawing();
+
+    if (button_pressed(&main_page->start_button)) {
+        return pages_work;
+    }
+
+    return pages_main;
 }
 
 struct timer_page {
@@ -102,7 +108,7 @@ struct timer_page new_timer_page(void) {
     Vector2 button_size = VEC(150.0f, 50.0f);
 
     timer_page.stop_button = (struct button) {
-        .pos = VEC(( button_size.x - WIDTH ) / 2, HEIGHT - 100.0),
+        .pos = VEC((WIDTH - button_size.x) / 2, HEIGHT - 100.0),
         .size = button_size,
         .color = BUTTON_COLOR_2,
         .is_triangle = false,
@@ -117,10 +123,38 @@ void update_timer_page(struct timer_page* timer_page, struct time work, struct t
     assert(page == pages_rest || page == pages_work);
 
     BeginDrawing();
+    ClearBackground(GetColor(0x0f0f0fff));
+
+    double target_time = 0.0;
+    
+    if (page == pages_rest) {
+        draw_centered_text("Rest", 50, 50);
+        target_time = timer_page->start_time + time_to_secs(rest);
+    } else {
+        draw_centered_text("Work", 50, 50);
+        target_time = timer_page->start_time + time_to_secs(work);
+    }
 
     draw_button(&timer_page->stop_button);
 
+    double remaining_time = target_time - GetTime();
+
+    if (remaining_time >= 0.0) {
+        struct time displayed_time = secs_to_time(remaining_time);
+        draw_time(&displayed_time, 150.0f);
+    }
+
     EndDrawing();
+
+    if (remaining_time < 0.0) {
+        if (page == pages_work) {
+            page = pages_rest;
+        } else if (page == pages_rest) {
+            page = pages_work;
+        }
+        
+        timer_page->start_time = GetTime();
+    }
 }
 
 void draw_centered_text(const char* text, int ypos, int font_size) {
@@ -143,7 +177,10 @@ int main(void) {
 
     while (!WindowShouldClose()) {
         if (page == pages_main) {
-            update_main_page(&main_page, &work, &rest);
+            page = update_main_page(&main_page, &work, &rest);
+            if (page == pages_work) {
+                timer_page.start_time = GetTime();
+            }
         } else if (page == pages_rest || page == pages_work) {
             update_timer_page(&timer_page, work, rest);
         }
