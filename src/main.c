@@ -6,21 +6,24 @@
 #include "buttons.h"
 #include "constants.h"
 
-void draw_centered_text(const char* text, int ypos, int font_size) {
-    int text_width = MeasureText(text, font_size);
-    Vector2 position = VEC((WIDTH - text_width) / 2.0, ypos);
-    DrawTextEx(GetFontDefault(), text, position, font_size, 10, FONT_COLOR);
-}
+enum page_enum {
+    pages_main,
+    pages_work,
+    pages_rest,
+} page = pages_main;
 
-int main(void) {
-    SetConfigFlags(FLAG_WINDOW_HIGHDPI);
-    InitWindow(WIDTH, HEIGHT, "PMOdoro");
+struct main_page {
+    struct button start_button;
+    struct button save_button;
+    struct button load_button;
+    
+    struct time_buttons work_time_buttons;
+    struct time_buttons rest_time_buttons;
+};
 
-    SetTargetFPS(60);
+void draw_centered_text(const char* text, int ypos, int font_size);
 
-    struct time work = {25, 0};
-    struct time rest = {5, 0};
-
+struct main_page new_main_page(void) {
     struct button start_button = {
         .pos = { (WIDTH - 150) / 2.0, 325 },
         .size = { 150, 50 },
@@ -51,27 +54,59 @@ int main(void) {
     struct time_buttons work_time_buttons = new_time_buttons(VEC(0.0, TIME_TOP_PADDING));
     struct time_buttons rest_time_buttons = new_time_buttons(VEC(0.0, TIME_TOP_PADDING * 2 + TIME_FONT_SIZE));
 
+
+    return ( struct main_page ) {
+        start_button,
+        save_button,
+        load_button,
+
+        work_time_buttons,
+        rest_time_buttons,
+    };
+}
+
+void update_main_page(struct main_page* main_page, struct time* work, struct time* rest) {
+    update_time(&main_page->work_time_buttons, work);
+    update_time(&main_page->rest_time_buttons, rest);
+
+    BeginDrawing();
+    ClearBackground(GetColor(0x0f0f0fff));
+
+    draw_centered_text("Work", TIME_TOP_PADDING - LABEL_BOTTOM_PADDING, LABEL_FONT_SIZE);
+    draw_time(work, TIME_TOP_PADDING);
+
+    draw_centered_text("Rest", TIME_TOP_PADDING * 2 + TIME_FONT_SIZE - LABEL_BOTTOM_PADDING, LABEL_FONT_SIZE);
+    draw_time(rest, TIME_TOP_PADDING * 2 + TIME_FONT_SIZE);
+
+    draw_button(&main_page->save_button);
+    draw_button(&main_page->start_button);
+    draw_button(&main_page->load_button);
+
+    draw_time_buttons(&main_page->work_time_buttons);
+    draw_time_buttons(&main_page->rest_time_buttons);
+
+    EndDrawing();
+}
+
+void draw_centered_text(const char* text, int ypos, int font_size) {
+    int text_width = MeasureText(text, font_size);
+    Vector2 position = VEC((WIDTH - text_width) / 2.0, ypos);
+    DrawTextEx(GetFontDefault(), text, position, font_size, 10, FONT_COLOR);
+}
+
+int main(void) {
+    SetConfigFlags(FLAG_WINDOW_HIGHDPI);
+    InitWindow(WIDTH, HEIGHT, "PMOdoro");
+
+    SetTargetFPS(60);
+
+    struct time work = {25, 0};
+    struct time rest = {5, 0};
+
+    struct main_page main_page = new_main_page();
+
     while (!WindowShouldClose()) {
-        update_time(&work_time_buttons, &work);
-        update_time(&rest_time_buttons, &rest);
-
-        BeginDrawing();
-        ClearBackground(GetColor(0x0f0f0fff));
-
-        draw_centered_text("Work", TIME_TOP_PADDING - LABEL_BOTTOM_PADDING, LABEL_FONT_SIZE);
-        draw_time(&work, TIME_TOP_PADDING);
-
-        draw_centered_text("Rest", TIME_TOP_PADDING * 2 + TIME_FONT_SIZE - LABEL_BOTTOM_PADDING, LABEL_FONT_SIZE);
-        draw_time(&rest, TIME_TOP_PADDING * 2 + TIME_FONT_SIZE);
-
-        draw_button(&save_button);
-        draw_button(&start_button);
-        draw_button(&load_button);
-
-        draw_time_buttons(&work_time_buttons);
-        draw_time_buttons(&rest_time_buttons);
-
-        EndDrawing();
+        update_main_page(&main_page, &work, &rest);
     }
 
     CloseWindow();
