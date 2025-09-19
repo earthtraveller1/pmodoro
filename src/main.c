@@ -119,7 +119,7 @@ struct timer_page new_timer_page(void) {
     return timer_page;
 }
 
-void update_timer_page(struct timer_page* timer_page, struct time work, struct time rest) {
+enum page_enum update_timer_page(struct timer_page* timer_page, struct time work, struct time rest) {
     assert(page == pages_rest || page == pages_work);
 
     BeginDrawing();
@@ -155,6 +155,13 @@ void update_timer_page(struct timer_page* timer_page, struct time work, struct t
         
         timer_page->start_time = GetTime();
     }
+
+    if (button_pressed(&timer_page->stop_button)) {
+        timer_page->start_time = 0;
+        return pages_main;
+    }
+
+    return page;
 }
 
 void draw_centered_text(const char* text, int ypos, int font_size) {
@@ -182,7 +189,7 @@ int main(void) {
                 timer_page.start_time = GetTime();
             }
         } else if (page == pages_rest || page == pages_work) {
-            update_timer_page(&timer_page, work, rest);
+            page = update_timer_page(&timer_page, work, rest);
         }
     }
 
