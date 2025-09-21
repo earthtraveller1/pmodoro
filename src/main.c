@@ -89,6 +89,8 @@ struct main_page {
     
     struct time_buttons work_time_buttons;
     struct time_buttons rest_time_buttons;
+
+    const char* top_message;
 };
 
 void draw_centered_text(const char* text, int ypos, int font_size);
@@ -132,6 +134,8 @@ struct main_page new_main_page(void) {
 
         work_time_buttons,
         rest_time_buttons,
+
+        NULL
     };
 }
 
@@ -141,6 +145,10 @@ enum page_enum update_main_page(struct main_page* main_page, struct time* work, 
 
     BeginDrawing();
     ClearBackground(GetColor(0x0f0f0fff));
+
+    if (main_page->top_message != NULL) {
+        draw_centered_text(main_page->top_message, 10, 20);
+    }
 
     draw_centered_text("Work", TIME_TOP_PADDING - LABEL_BOTTOM_PADDING, LABEL_FONT_SIZE);
     draw_time(work, TIME_TOP_PADDING);
@@ -159,6 +167,22 @@ enum page_enum update_main_page(struct main_page* main_page, struct time* work, 
 
     if (button_pressed(&main_page->start_button)) {
         return pages_work;
+    }
+
+    if (button_pressed(&main_page->save_button)) {
+        if (save_times(*work, *rest)) {
+            main_page->top_message = "Saved!";
+        } else {
+            main_page->top_message = "Error :(";
+        }
+    }
+
+    if (button_pressed(&main_page->load_button)) {
+        if (load_times(work, rest)) {
+            main_page->top_message = "Loaded!";
+        } else {
+            main_page->top_message = "Error :(";
+        }
     }
 
     return pages_main;
