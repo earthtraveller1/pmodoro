@@ -147,7 +147,7 @@ enum page_enum update_main_page(struct main_page* main_page, struct time* work, 
     ClearBackground(GetColor(0x0f0f0fff));
 
     if (main_page->top_message != NULL) {
-        draw_centered_text(main_page->top_message, 10, 20);
+        draw_centered_text(main_page->top_message, 0, 10);
     }
 
     draw_centered_text("Work", TIME_TOP_PADDING - LABEL_BOTTOM_PADDING, LABEL_FONT_SIZE);
