@@ -46,6 +46,36 @@ bool save_times(struct time work_time, struct time rest_time) {
     return true;
 }
 
+bool load_times(struct time* work_time, struct time* rest_time) {
+    const char* home = getenv("HOME");
+    const char* file_name = "/.pmodoro";
+    char* path = malloc(strlen(home) + strlen(file_name) + 1);
+
+    // THIS IS PERFECTLY SAFE!!!
+    // WE HAVE ALREADY ENSURED ALL THE LENGTHS ARE CORRECT BEFOREHAND!!!
+    // DO NOT WORRY!!!
+    strcpy(path, home);
+    strcat(path, file_name);
+
+    FILE* target_file = fopen(path, "r");
+    if (target_file == NULL) {
+        return false;
+    }
+
+    fread(&work_time->minutes, sizeof(uint32_t), 1, target_file);
+    if (ferror(target_file) != 0) return false;
+    fread(&work_time->seconds, sizeof(uint32_t), 1, target_file);
+    if (ferror(target_file) != 0) return false;
+    fread(&rest_time->minutes, sizeof(uint32_t), 1, target_file);
+    if (ferror(target_file) != 0) return false;
+    fread(&work_time->seconds, sizeof(uint32_t), 1, target_file);
+    if (ferror(target_file) != 0) return false;
+
+    fclose(target_file);
+
+    return true;
+}
+
 enum page_enum {
     pages_main,
     pages_work,
