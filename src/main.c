@@ -1,12 +1,50 @@
 #include <raylib.h>
 
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
 #include "vector-math.h"
 #include "buttons.h"
 #include "constants.h"
+
+// Also, for the save format:
+// work_time.minutes - 4 bytes
+// work_time.seconds - 4 bytes
+// rest_time.minutes - 4 bytes
+// rest_time.seconds - 4 bytes
+
+bool save_times(struct time work_time, struct time rest_time) {
+    const char* home = getenv("HOME");
+    const char* file_name = "/.pmodoro";
+    char* path = malloc(strlen(home) + strlen(file_name) + 1);
+
+    // THIS IS PERFECTLY SAFE!!!
+    // WE HAVE ALREADY ENSURED ALL THE LENGTHS ARE CORRECT BEFOREHAND!!!
+    // DO NOT WORRY!!!
+    strcpy(path, home);
+    strcat(path, file_name);
+
+    FILE* target_file = fopen(path, "w");
+    if (target_file == NULL) {
+        return false;
+    }
+
+    fwrite(&work_time.minutes, sizeof(uint32_t), 1, target_file);
+    if (ferror(target_file) != 0) return false;
+    fwrite(&work_time.seconds, sizeof(uint32_t), 1, target_file);
+    if (ferror(target_file) != 0) return false;
+    fwrite(&rest_time.minutes, sizeof(uint32_t), 1, target_file);
+    if (ferror(target_file) != 0) return false;
+    fwrite(&work_time.seconds, sizeof(uint32_t), 1, target_file);
+    if (ferror(target_file) != 0) return false;
+
+    fclose(target_file);
+
+    return true;
+}
 
 enum page_enum {
     pages_main,
