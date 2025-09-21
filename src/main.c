@@ -259,7 +259,7 @@ enum page_enum update_timer_page(struct timer_page* timer_page, struct time work
 void draw_centered_text(const char* text, int ypos, int font_size) {
     int text_width = MeasureText(text, font_size);
     Vector2 position = VEC((WIDTH - text_width) / 2.0, ypos);
-    DrawTextEx(GetFontDefault(), text, position, font_size, 10, FONT_COLOR);
+    DrawTextEx(GetFontDefault(), text, position, font_size, 1, FONT_COLOR);
 }
 
 int main(void) {
