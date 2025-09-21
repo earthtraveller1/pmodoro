@@ -3,9 +3,11 @@
 
 typedef struct Vector2 Vector2;
 
+#include <stdint.h>
+
 struct time {
-    int minutes;
-    int seconds;
+    uint32_t minutes;
+    uint32_t seconds;
 };
 
 void time_inc_mins(struct time* time, unsigned int mins); 
