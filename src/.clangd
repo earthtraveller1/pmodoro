@@ -1,0 +1,2 @@
+CompileFlags:
+  Add: [-Wall, -Wextra, -pedantic-errors, -I../deps/raylib/src] 
